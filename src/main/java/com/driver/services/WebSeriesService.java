@@ -53,7 +53,9 @@ public class WebSeriesService {
             productionHouse.getWebSeriesList().add(webSeries);
             productionHouseRepository.save(productionHouse);
         }
-        return null;
+
+        WebSeries webSeries1 = webSeriesRepository.save(webSeries);
+        return webSeries1.getId();
     }
 
 }

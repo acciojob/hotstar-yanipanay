@@ -45,7 +45,14 @@ public class UserService {
         }
         Integer num =0;
         for(WebSeries series : seriesList){
-            if(series.getAgeLimit()<=user.getAge() && series.getSubscriptionType().equals(user.getSubscription().getSubscriptionType())) num++;
+            if(series.getAgeLimit()<=user.getAge()){
+                if(series.getSubscriptionType().equals(SubscriptionType.ELITE) && series.getSubscriptionType().equals(user.getSubscription())) num++;
+                else if(series.getSubscriptionType().equals(SubscriptionType.PRO)){
+                    if(user.getSubscription().equals(SubscriptionType.PRO) || user.getSubscription().equals(SubscriptionType.ELITE)) num++;
+                }else{
+                    num++;
+                }
+            }
         }
 
         return num;
