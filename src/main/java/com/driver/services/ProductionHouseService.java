@@ -13,12 +13,13 @@ public class ProductionHouseService {
     @Autowired
     ProductionHouseRepository productionHouseRepository;
 
-    public Integer addProductionHouseToDb(ProductionHouseEntryDto productionHouseEntryDto){
+    public Integer addProductionHouseToDb(ProductionHouseEntryDto productionHouseEntryDto) throws Exception {
 
         ProductionHouse productionHouse= new ProductionHouse(productionHouseEntryDto.getName());
         productionHouse.setRatings(0);
 
-        productionHouseRepository.save(productionHouse);
+            productionHouseRepository.save(productionHouse);
+
         return  null;
     }
 

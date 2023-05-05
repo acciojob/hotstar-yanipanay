@@ -5,8 +5,12 @@ import com.driver.model.ProductionHouse;
 import com.driver.model.WebSeries;
 import com.driver.repository.ProductionHouseRepository;
 import com.driver.repository.WebSeriesRepository;
+import jdk.tools.jlink.internal.Platform;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.swing.text.html.Option;
+import java.util.Optional;
 
 @Service
 public class WebSeriesService {
@@ -24,7 +28,15 @@ public class WebSeriesService {
         //use function written in Repository Layer for the same
         //Dont forget to save the production and webseries Repo
 
-        ProductionHouse productionHouse = productionHouseRepository.findById(webSeriesEntryDto.getProductionHouseId()).get();
+        Optional<ProductionHouse> productionHouseOptional = productionHouseRepository.findById(webSeriesEntryDto.getProductionHouseId());
+
+        ProductionHouse productionHouse;
+
+        if(productionHouseOptional.isPresent()){
+          productionHouse = productionHouseOptional.get();
+        }else{
+            throw  new Exception("Prodcution House does not exist");
+        }
 
 
         WebSeries webSeries = new WebSeries(webSeriesEntryDto.getSeriesName()

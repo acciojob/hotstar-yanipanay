@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -29,14 +30,19 @@ public class UserService {
         return user1.getId();
     }
 
-    public Integer getAvailableCountOfWebSeriesViewable(Integer userId){
+    public Integer getAvailableCountOfWebSeriesViewable(Integer userId) throws Exception {
 
         //Return the count of all webSeries that a user can watch based on his ageLimit and subscriptionType
         //Hint: Take out all the Webseries from the WebRepository
 
         List<WebSeries> seriesList = webSeriesRepository.findAll();
-
-        User user = userRepository.findById(userId).get();
+        User user;
+        Optional<User> userOptional = userRepository.findById(userId);
+        if(userOptional.isPresent()){
+            user = userOptional.get();
+        }else {
+            throw new Exception("User does not exist");
+        }
         Integer num =0;
         for(WebSeries series : seriesList){
             if(series.getAgeLimit()<=user.getAge() && series.getSubscriptionType().equals(user.getSubscription().getSubscriptionType())) num++;
