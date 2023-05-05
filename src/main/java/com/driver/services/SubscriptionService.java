@@ -23,7 +23,7 @@ public class SubscriptionService {
     @Autowired
     UserRepository userRepository;
 
-    public Integer buySubscription(SubscriptionEntryDto subscriptionEntryDto) throws Exception {
+    public Integer buySubscription(SubscriptionEntryDto subscriptionEntryDto) {
 
         //Save The subscription Object into the Db and return the total Amount that user has to pay
         Subscription subscription = new Subscription();
@@ -35,7 +35,7 @@ public class SubscriptionService {
             user = userOptional.get();
         }
         else {
-            throw  new Exception("User not found");
+            return 0;
         }
 
         subscription.setStartSubscriptionDate(new Date());
@@ -72,7 +72,7 @@ public class SubscriptionService {
             user = userOptional.get();
         }
         else {
-            throw  new Exception("User not found");
+            return 0;
         }
 
         Subscription subscription = user.getSubscription();
@@ -105,7 +105,7 @@ public class SubscriptionService {
         //Hint is to use findAll function from the SubscriptionDb
 
         List<Subscription> subList = subscriptionRepository.findAll();
-        Integer revenue=0;
+        int revenue=0;
         for(Subscription subscription:subList){
             revenue+=subscription.getTotalAmountPaid();
         }

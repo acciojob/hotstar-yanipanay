@@ -18,11 +18,8 @@ public class SubscriptionController {
 
         //We need to buy subscription and save its relevant subscription to the db and return the finalAmount
 
-        try{
+
             return subscriptionService.buySubscription(subscriptionEntryDto);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
 
     }
 

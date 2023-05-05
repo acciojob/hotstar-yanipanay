@@ -35,7 +35,7 @@ public class WebSeriesService {
         if(productionHouseOptional.isPresent()){
           productionHouse = productionHouseOptional.get();
         }else{
-            throw  new Exception("Prodcution House does not exist");
+            return -1;
         }
 
 

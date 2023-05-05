@@ -30,7 +30,7 @@ public class UserService {
         return user1.getId();
     }
 
-    public Integer getAvailableCountOfWebSeriesViewable(Integer userId) throws Exception {
+    public Integer getAvailableCountOfWebSeriesViewable(Integer userId) {
 
         //Return the count of all webSeries that a user can watch based on his ageLimit and subscriptionType
         //Hint: Take out all the Webseries from the WebRepository
@@ -41,7 +41,7 @@ public class UserService {
         if(userOptional.isPresent()){
             user = userOptional.get();
         }else {
-            throw new Exception("User does not exist");
+            return 0;
         }
         Integer num =0;
         for(WebSeries series : seriesList){
