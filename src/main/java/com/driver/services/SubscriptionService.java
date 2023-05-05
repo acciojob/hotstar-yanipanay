@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SubscriptionService {
@@ -22,11 +23,41 @@ public class SubscriptionService {
     @Autowired
     UserRepository userRepository;
 
-    public Integer buySubscription(SubscriptionEntryDto subscriptionEntryDto){
+    public Integer buySubscription(SubscriptionEntryDto subscriptionEntryDto) throws Exception {
 
         //Save The subscription Object into the Db and return the total Amount that user has to pay
+        Subscription subscription = new Subscription();
+        subscription.setSubscriptionType(subscriptionEntryDto.getSubscriptionType());
 
-        return null;
+        Optional<User> userOptional= userRepository.findById(subscriptionEntryDto.getUserId());
+        User user;
+        if(userOptional.isPresent()){
+            user = userOptional.get();
+        }
+        else {
+            throw  new Exception("User not found");
+        }
+
+        subscription.setStartSubscriptionDate(new Date());
+
+        int s = subscriptionEntryDto.getNoOfScreensRequired();
+
+        Integer price;
+
+        if(subscription.getSubscriptionType().equals(SubscriptionType.BASIC)){
+            price = 500 +(s*200);
+        }else if(subscription.getSubscriptionType().equals(SubscriptionType.PRO)) {
+            price = 800 + (s * 250);
+        }else price = 1000+(s*350);
+
+        subscription.setTotalAmountPaid(price);
+
+        subscription.setUser(user);
+        user.setSubscription(subscription);
+
+        userRepository.save(user);
+
+        return price;
     }
 
     public Integer upgradeSubscription(Integer userId)throws Exception{
@@ -35,7 +66,37 @@ public class SubscriptionService {
         //In all other cases just try to upgrade the subscription and tell the difference of price that user has to pay
         //update the subscription in the repository
 
-        return null;
+        Optional<User> userOptional= userRepository.findById(userId);
+        User user;
+        if(userOptional.isPresent()){
+            user = userOptional.get();
+        }
+        else {
+            throw  new Exception("User not found");
+        }
+
+        Subscription subscription = user.getSubscription();
+
+        Integer change;
+
+        if(subscription.getSubscriptionType().equals(SubscriptionType.ELITE)) throw new Exception("Already the best Subscription");
+        else if (subscription.getSubscriptionType().equals(SubscriptionType.PRO)){
+            change = 200+(subscription.getNoOfScreensSubscribed()*100);
+
+            subscription.setSubscriptionType(SubscriptionType.ELITE);
+            subscription.setTotalAmountPaid(subscription.getTotalAmountPaid()+change);
+
+            userRepository.save(user);
+        }else{
+            change = 300+(subscription.getNoOfScreensSubscribed()*50);
+
+            subscription.setSubscriptionType(SubscriptionType.PRO);
+            subscription.setTotalAmountPaid(subscription.getTotalAmountPaid()+change);
+
+            userRepository.save(user);
+        }
+
+        return change;
     }
 
     public Integer calculateTotalRevenueOfHotstar(){
@@ -43,7 +104,12 @@ public class SubscriptionService {
         //We need to find out total Revenue of hotstar : from all the subscriptions combined
         //Hint is to use findAll function from the SubscriptionDb
 
-        return null;
+        List<Subscription> subList = subscriptionRepository.findAll();
+        Integer revenue=0;
+        for(Subscription subscription:subList){
+            revenue+=subscription.getTotalAmountPaid();
+        }
+        return revenue;
     }
 
 }
