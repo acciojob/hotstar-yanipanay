@@ -39,6 +39,8 @@ public class WebSeriesService {
         }
 
 
+        if(webSeriesRepository.findBySeriesName(webSeriesEntryDto.getSeriesName())!=null) throw new Exception("Series is already present");
+
         WebSeries webSeries = new WebSeries(webSeriesEntryDto.getSeriesName()
                 ,webSeriesEntryDto.getAgeLimit(),webSeriesEntryDto.getRating()
                 ,webSeriesEntryDto.getSubscriptionType());
